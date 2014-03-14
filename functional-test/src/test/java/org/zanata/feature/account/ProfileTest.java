@@ -28,7 +28,9 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.EditProfilePage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.Constants;
 import org.zanata.util.NoScreenshot;
+import org.zanata.util.PropertiesHolder;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,6 +47,8 @@ public class ProfileTest {
     public AddUsersRule addUsersRule = new AddUsersRule();
 
     private static final String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
+    private static final String serverUrl = PropertiesHolder
+                .getProperty(Constants.zanataInstance.value());
 
     @Test
     public void verifyProfileData() {
@@ -63,7 +67,7 @@ public class ProfileTest {
         assertThat(
                 "The configuration url is correct",
                 myAccountPage.getConfigurationDetails(),
-                Matchers.containsString("localhost.url=http://localhost:9898/zanata/"));
+                Matchers.containsString("localhost.url="+serverUrl));
 
         assertThat("The configuration username is correct",
                 myAccountPage.getConfigurationDetails(),
@@ -150,19 +154,17 @@ public class ProfileTest {
                 .goToMyProfile()
                 .clickEditProfileButton()
                 .enterName("Transistor")
-                .enterEmail("admin@example.com")
-                .clickSaveAndExpectErrors();
+                .enterEmail("admin@example.com");
 
         assertThat("The email is rejected, being already taken",
-                editProfilePage.getErrors(),
-                Matchers.contains("This email address is already taken"));
+                editProfilePage.getFieldErrors(),
+                Matchers.hasItem("This email address is already taken"));
 
         editProfilePage = editProfilePage
-                .enterEmail("test @example.com")
-                .clickSaveAndExpectErrors();
+                .enterEmail("test @example.com");
 
         assertThat("The email is rejected, being of invalid format",
-                editProfilePage.getErrors(),
-                Matchers.contains("not a well-formed email address"));
+                editProfilePage.getFieldErrors(),
+                Matchers.hasItem("not a well-formed email address"));
     }
 }
