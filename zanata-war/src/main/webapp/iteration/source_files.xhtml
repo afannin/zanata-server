@@ -9,6 +9,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:z="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template_2x.xhtml">
 
 <ui:define name="head">
@@ -261,6 +262,10 @@
     </h:form>
   </rich:popupPanel>
 
+  <z:multi-file-upload
+    url="#{request.contextPath}/files/upload?p=#{projectIterationFilesAction.projectSlug}&amp;v=#{projectIterationFilesAction.iterationSlug}">
+    Testing
+  </z:multi-file-upload>
 
 </ui:define>
 
