@@ -34,6 +34,22 @@
 }(function ($, tmpl) {
     'use strict';
 
+    // templates are wrapped in cdata tags to keep JSF happy,
+    // so the template loading function is updated to strip them.
+    tmpl.load = (function (originalLoad) {
+        return function (id) {
+            return withoutCdataTag (originalLoad(id));
+        }
+
+        function withoutCdataTag (string) {
+            return (string.trim().indexOf("<![CDATA[") === 0) ? trimCdata(string) : string;
+        }
+
+        function trimCdata (string) {
+            return string.slice("<![CDATA[".length, string.lastIndexOf("]]>"));
+        }
+    })(tmpl.load)
+
     $.blueimp.fileupload.prototype._specialOptions.push(
         'filesContainer',
         'uploadTemplateId',
